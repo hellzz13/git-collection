@@ -1,39 +1,61 @@
-import React from 'react';
-import { Title, Form, Repos } from './styles';
-import logo from '../../assets/logo.svg'
-import { FiChevronRight } from 'react-icons/fi';
-import { api } from '../../services/api'
+import React from "react";
+import { Title, Form, Repos } from "./styles";
+import logo from "../../assets/logo.svg";
+import { FiChevronRight } from "react-icons/fi";
+import { api } from "../../services/api";
 
 interface GithubRepository {
-    full_name: string,
-    description: string,
-    owner: {
-        login: string,
-        avatar_url: string,
-    };
+  full_name: string;
+  description: string;
+  owner: {
+    login: string;
+    avatar_url: string;
+  };
 }
 export const Dashboard: React.FC = () => {
-    return (
-        <>
-            <img src={logo} alt="Git-Collection" />
-            <Title>Github Catalog</Title>
-            <Form>
-                <input placeholder="Name / Repository Name" />
-                <button type="submit">Pesquisar</button>
-            </Form>
-            <Repos>
-                <a href="/repositories">
-                    <img src="https://github.com/hellzz13.png" alt="Repositório" />
-                    <div>
-                        <strong>hellzz13/git-collection</strong>
-                        <p>repositírio do curso</p>
-                    </div>
-                    <FiChevronRight size={20} />
-                </a>
+  const [repos, setRepos] = React.useState<GithubRepository[]>([]); //armazena a lista
+  const [newRepo, setNewRepo] = React.useState(""); // armazena o input
 
-            </Repos>
-        </>
+  function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    setNewRepo(event.target.value);
+  }
+  async function handleAddRepo(
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> {
+    event.preventDefault();
+    const response = await api.get<GithubRepository>(`repos/${newRepo}`);
 
-    );
-}
+    const repository = response.data;
 
+    setRepos([...repos, repository]);
+    setNewRepo(" ");
+  }
+  return (
+    <>
+      <img src={logo} alt="Git-Collection" />
+      <Title>Github Catalog</Title>
+      <Form onSubmit={handleAddRepo}>
+        <input
+          placeholder="Name / Repository Name"
+          onChange={handleInputChange}
+        />
+        <button type="submit">Pesquisar</button>
+      </Form>
+      <Repos>
+        {repos.map((repository) => (
+          <a href="/repositories" key={repository.full_name}>
+            <img
+              src={repository.owner.avatar_url}
+              alt={repository.owner.login}
+            />
+            <div>
+              <strong>{repository.full_name}</strong>
+              <p>{repository.description}</p>
+            </div>
+            <FiChevronRight size={20} />
+          </a>
+        ))}
+      </Repos>
+    </>
+  );
+};

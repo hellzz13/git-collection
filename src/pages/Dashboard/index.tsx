@@ -13,9 +13,20 @@ interface GithubRepository {
     };
 }
 export const Dashboard: React.FC = () => {
-    const [repos, setRepos] = React.useState<GithubRepository[]>([]); //armazena a lista
+    const [repos, setRepos] = React.useState<GithubRepository[]>(() => {
+        const storageRepos = localStorage.getItem('@GitCollection:repositories');
+        if (storageRepos) {
+            return JSON.parse(storageRepos);
+        }
+
+        return [];
+    }); //armazena a lista
     const [newRepo, setNewRepo] = React.useState(""); // armazena o input
     const [inputError, setInputError] = React.useState('');
+
+    React.useEffect(() => {
+        localStorage.setItem('@GitCollection:repositories', JSON.stringify(repos));
+    }, [repos]); //toda vez que o repos for alterado
 
     function handleInputChange(event: React.ChangeEvent<HTMLInputElement>): void {
         setNewRepo(event.target.value);

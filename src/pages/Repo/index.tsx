@@ -1,6 +1,6 @@
 import React from 'react';
 import { useRouteMatch, Link } from 'react-router-dom';
-import { Header } from './styles';
+import { Header, RepoInfo } from './styles';
 import { FiChevronLeft } from 'react-icons/fi'
 
 import logo from '../../assets/logo.svg'
@@ -24,6 +24,29 @@ export const Repo: React.FC = () => {
                 </Link>
 
             </Header>
+            <RepoInfo>
+                <header>
+                    <img src="" alt="Teste" />
+                    <div>
+                        <strong>hellzz13/Churrascometro</strong>
+                        <p>Repositorio churrascometro</p>
+                    </div>
+                </header>
+                <ul>
+                    <li>
+                        <strong>2333</strong>
+                        <span>Stars</span>
+                    </li>
+                    <li>
+                        <strong>2333</strong>
+                        <span>Forks</span>
+                    </li>
+                    <li>
+                        <strong>2333</strong>
+                        <span>Issues abertas</span>
+                    </li>
+                </ul>
+            </RepoInfo>
         </>
     );
 }

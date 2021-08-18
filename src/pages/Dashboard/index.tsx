@@ -24,9 +24,8 @@ export const Dashboard: React.FC = () => {
         return [];
     }); //armazena a lista
     const [newRepo, setNewRepo] = React.useState(""); // armazena o input
-    const [inputError, setInputError] = React.useState('');
-    const formEl = React.useRef<HTMLFormElement | null>(null);
-
+    const [inputError, setInputError] = React.useState(''); //armazena a informação de erro
+    const formEl = React.useRef<HTMLFormElement | null>(null); //controla o elemento pela ref
     React.useEffect(() => {
         localStorage.setItem('@GitCollection:repositories', JSON.stringify(repos));
     }, [repos]); //toda vez que o repos for alterado
@@ -78,8 +77,8 @@ export const Dashboard: React.FC = () => {
             {inputError && <Error>{inputError}</Error>}
 
             <Repos>
-                {repos.map((repository) => (
-                    <Link to={`repositories/${repository.full_name}`} key={repository.full_name}>
+                {repos.map((repository, index) => (
+                    <Link to={`repositories/${repository.full_name}`} key={repository.full_name + index}>
                         <img
                             src={repository.owner.avatar_url}
                             alt={repository.owner.login}

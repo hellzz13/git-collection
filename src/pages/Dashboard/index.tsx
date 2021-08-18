@@ -25,6 +25,7 @@ export const Dashboard: React.FC = () => {
     }); //armazena a lista
     const [newRepo, setNewRepo] = React.useState(""); // armazena o input
     const [inputError, setInputError] = React.useState('');
+    const formEl = React.useRef<HTMLFormElement | null>(null);
 
     React.useEffect(() => {
         localStorage.setItem('@GitCollection:repositories', JSON.stringify(repos));
@@ -43,18 +44,30 @@ export const Dashboard: React.FC = () => {
             return;
         }
 
-        const response = await api.get<GithubRepository>(`repos/${newRepo}`);
+        // tratamento de erro
+        try {
+            const response = await api.get<GithubRepository>(`repos/${newRepo}`);
 
-        const repository = response.data;
+            const repository = response.data;
 
-        setRepos([...repos, repository]);
-        setNewRepo("");
+            setRepos([...repos, repository]);
+            formEl.current?.reset();
+            setNewRepo("");
+            setInputError('')
+
+        } catch {
+            setInputError('Repositório não encontrado no Github')
+        }
     }
     return (
         <>
             <img src={logo} alt="Git-Collection" />
             <Title>Github Catalog</Title>
-            <Form hasError={Boolean(inputError)} onSubmit={handleAddRepo}>
+            <Form
+                ref={formEl}
+                hasError={Boolean(inputError)}
+                onSubmit={handleAddRepo}
+            >
                 <input
                     placeholder="Name / Repository Name"
                     onChange={handleInputChange}
